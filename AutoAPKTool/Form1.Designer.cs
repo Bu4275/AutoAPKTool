@@ -38,20 +38,22 @@
             this.btn_JdGUI = new System.Windows.Forms.Button();
             this.chkBox_TopMost = new System.Windows.Forms.CheckBox();
             this.btn_openFile = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox_path
             // 
+            this.textBox_path.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.textBox_path.Location = new System.Drawing.Point(77, 29);
-            this.textBox_path.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox_path.Margin = new System.Windows.Forms.Padding(6);
             this.textBox_path.Name = "textBox_path";
-            this.textBox_path.Size = new System.Drawing.Size(575, 33);
+            this.textBox_path.Size = new System.Drawing.Size(575, 29);
             this.textBox_path.TabIndex = 0;
             // 
             // btn_Decompiler
             // 
             this.btn_Decompiler.Location = new System.Drawing.Point(22, 80);
-            this.btn_Decompiler.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btn_Decompiler.Margin = new System.Windows.Forms.Padding(6);
             this.btn_Decompiler.Name = "btn_Decompiler";
             this.btn_Decompiler.Size = new System.Drawing.Size(138, 45);
             this.btn_Decompiler.TabIndex = 1;
@@ -146,12 +148,23 @@
             this.btn_openFile.UseVisualStyleBackColor = true;
             this.btn_openFile.Click += new System.EventHandler(this.btn_openFile_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.textBox1.Location = new System.Drawing.Point(22, 202);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(630, 139);
+            this.textBox1.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(669, 205);
+            this.ClientSize = new System.Drawing.Size(670, 353);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btn_openFile);
             this.Controls.Add(this.chkBox_TopMost);
             this.Controls.Add(this.btn_JdGUI);
@@ -165,9 +178,9 @@
             this.Font = new System.Drawing.Font("微軟正黑體", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Form1";
-            this.Text = "AutoAPKTool";
+            this.Text = "AutoAPKTool  2015/10/06 By Bu4275";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.ResumeLayout(false);
@@ -187,6 +200,7 @@
         private System.Windows.Forms.Button btn_JdGUI;
         private System.Windows.Forms.CheckBox chkBox_TopMost;
         private System.Windows.Forms.Button btn_openFile;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

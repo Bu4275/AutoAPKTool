@@ -24,6 +24,7 @@ namespace apkdecompiler
         public Form1()
         {
             InitializeComponent();
+            new Thread(ExcuteCmd).Start("/c dir");
         }
 
         // GetArg
@@ -45,61 +46,108 @@ namespace apkdecompiler
             return string.Format("/c \"\"{0}\" \"{1}\" -o \"{2}\"\"", D2J_DEX2JAR, input_Dex, output_Jar);
         }
 
+        private void setTextBoxStr(TextBox tb, string info)
+        {
+            tb.Text = info + "\r\n";
+            tb.SelectionStart = tb.Text.Length;
+            tb.ScrollToCaret();
+        }
         // ExcuteJar
         private void ExcuteJar(object args)
         {
-            var processInfo = new ProcessStartInfo("java.exe", args.ToString())
+            
+            this.Invoke(new Action(() =>
             {
-                CreateNoWindow = false,
-                UseShellExecute = false
-            };
-            Process proc;
+                setTextBoxStr(textBox1, "java.exe " + args.ToString() + "\r\n");
+            }));
 
-            if ((proc = Process.Start(processInfo)) == null)
+            ProcessStartInfo start_info =
+                new ProcessStartInfo("java.exe", args.ToString());
+            start_info.UseShellExecute = false;
+            start_info.CreateNoWindow = true;
+            start_info.RedirectStandardOutput = true;
+            start_info.RedirectStandardError = true;
+
+            // Make the process and set its start information.
+            using (Process proc = new Process())
             {
-                throw new InvalidOperationException("??");
+                proc.StartInfo = start_info;
+                proc.OutputDataReceived += (s, e) =>
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        setTextBoxStr(textBox1, textBox1.Text + e.Data);
+                    }));
+                };
+
+                proc.ErrorDataReceived += (s, e) =>
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        setTextBoxStr(textBox1, textBox1.Text + e.Data);
+                    }));
+                };
+                // Start the process.
+                proc.Start();
+                proc.BeginOutputReadLine();
+                proc.BeginErrorReadLine();
+                proc.WaitForExit();
+                proc.Close();
             }
 
-            proc.WaitForExit();
-            int exitCode = proc.ExitCode;
-            proc.Close();
-        }
-        private void ExcuteJar_NoWindow(object args)
-        {
-            var processInfo = new ProcessStartInfo("java.exe", args.ToString())
+            this.Invoke(new Action(() =>
             {
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-            Process proc;
-
-            if ((proc = Process.Start(processInfo)) == null)
-            {
-                throw new InvalidOperationException("??");
-            }
-
-            proc.WaitForExit();
-            int exitCode = proc.ExitCode;
-            proc.Close();
+                textBox1.Text += "Finish!\r\n";
+                textBox1.SelectionStart = textBox1.Text.Length;
+                textBox1.ScrollToCaret();
+            }));
         }
         private void ExcuteCmd(object args)
         {
-            var processInfo = new ProcessStartInfo("cmd.exe", args.ToString())
+            this.Invoke(new Action(() =>
             {
-                CreateNoWindow = false,
-                UseShellExecute = false
-            };
+                setTextBoxStr(textBox1, "cmd.exe " + args.ToString() + "\r\n");
+            }));
 
-            Process proc;
+            ProcessStartInfo start_info =
+                            new ProcessStartInfo("cmd.exe", args.ToString());
+            start_info.UseShellExecute = false;
+            start_info.CreateNoWindow = true;
+            start_info.RedirectStandardOutput = true;
+            start_info.RedirectStandardError = true;
 
-            if ((proc = Process.Start(processInfo)) == null)
+            // Make the process and set its start information.
+            using (Process proc = new Process())
             {
-                throw new InvalidOperationException("??");
+                proc.StartInfo = start_info;
+                proc.OutputDataReceived += (s, e) =>
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        setTextBoxStr(textBox1, textBox1.Text + e.Data);
+                    }));
+                };
+
+                proc.ErrorDataReceived += (s, e) =>
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        setTextBoxStr(textBox1, textBox1.Text + e.Data);
+                    }));
+                };
+                
+                // Start the process.
+                proc.Start();
+                proc.BeginOutputReadLine();
+                proc.BeginErrorReadLine();
+                proc.WaitForExit();
+                proc.Close();
             }
 
-            proc.WaitForExit();
-            int exitCode = proc.ExitCode;
-            proc.Close();
+            this.Invoke(new Action(() =>
+            {
+                setTextBoxStr(textBox1, textBox1.Text + "Finish!");
+            }));
         }
 
         // button Click
@@ -201,25 +249,31 @@ namespace apkdecompiler
 
             if (sf.ShowDialog() == DialogResult.OK)
             {
-                // Build
+                var tasks = new Task[2];
+
+                // Build arg
                 string output_ApkFileName = sf.FileName.ToString();
                 Console.WriteLine("path: {0}", output_ApkFileName);
+                string args1 = GetBuildArg(input_apkFolderName, output_ApkFileName);
                 
-                string args = GetBuildArg(input_apkFolderName, output_ApkFileName);
-                ExcuteJar(args);
-
-                // Sign
+                // Sign arg
                 string apkName_old = output_ApkFileName;
                 // get Full ApkPath without ".apk", than append "_Signed.apk"
-                string apkName_new = output_ApkFileName.Substring(0, output_ApkFileName.Length - 4) + "_Signed.apk";
-                args = GetSignArg(apkName_old, apkName_new);
+                string apkName_new = 
+                    output_ApkFileName.Substring(0, output_ApkFileName.Length - 4) + "_Signed.apk"; 
+                string args2 = GetSignArg(apkName_old, apkName_new);
 
-                new Thread(ExcuteJar).Start(args);
+                // Start
+                new Thread(()=>
+                {
+                    ExcuteJar(args1); // Build
+                    ExcuteJar(args2); // Sign
+                }).Start();
             }
         }
         private void btn_dex2jar_Click(object sender, EventArgs e)
         {
-           
+
             string input_Dex = textBox_path.Text;
             if (!File.Exists(input_Dex) || Path.GetExtension(input_Dex) != ".dex")
             {
@@ -259,12 +313,10 @@ namespace apkdecompiler
 
             textBox_path.Text = filePath;
         }
-
         private void btn_JdGUI_Click(object sender, EventArgs e)
         {
-            new Thread(ExcuteJar_NoWindow).Start("-jar " + JAR_JD_GUI);
+            new Thread(ExcuteJar).Start("-jar " + JAR_JD_GUI);
         }
-
         private void chkBox_TopMost_CheckedChanged(object sender, EventArgs e)
         {
             if (chkBox_TopMost.Checked)
@@ -272,7 +324,6 @@ namespace apkdecompiler
             else
                 this.TopMost = false;
         }
-
         private void btn_openFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog op = new OpenFileDialog();

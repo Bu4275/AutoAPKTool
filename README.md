@@ -1,11 +1,11 @@
 # AutoAPKTool
-Easy to use apktool and dex2jar on windows
+Easy to use apktool and dex2jar in Windows.
 
 ##Usage
 
-Place AutoAPKTool.exe and "tool" Folder in the same Folder.
+Place AutoAPKTool.exe and "tool" folder in the same directory.
 
-You can use OpenFile button to open file, or Drop file to the form window.
+You can use OpenFile button to open a file, or drop the file to the form window.
 
 ##Reference
 
