@@ -1,6 +1,13 @@
 # AutoAPKTool
 Easy to use apktool and dex2jar in Windows.
 
+##Environment
+
+.Net framework4.5
+
+Set enviroment path of Java
+
+
 ##Usage
 
 Place AutoAPKTool.exe and "tool" folder in the same directory.
