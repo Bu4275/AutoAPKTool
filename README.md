@@ -14,6 +14,12 @@ Place AutoAPKTool.exe and "tool" folder in the same directory.
 
 You can use OpenFile button to open a file, or drop the file to the form window.
 
+
+## Demo
+
+![image](https://github.com/Bu4275/AutoAPKTool/blob/master/demo.png)
+
+
 ##Reference
 
 `APKTool` - [http://ibotpeaches.github.io/Apktool/](http://ibotpeaches.github.io/Apktool/)
